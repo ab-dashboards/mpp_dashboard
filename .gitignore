@@ -1,3 +1,31 @@
+############################################
+# Editor & IDE
+.idea/
+.vscode/
 __pycache__/
 *.pyc
-.venv/
+
+############################################
+# Local data, logs, checkpoints
+data/
+logs/
+Backups/
+releases/
+*.csv
+*.xlsx
+*.npz
+*.json
+*.txt
+*.html
+
+############################################
+# Binaries & executables
+*.exe
+*.dll
+*.bat
+*.so
+
+############################################
+# Misc
+ngrok/
+*.log
