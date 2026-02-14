@@ -92,15 +92,15 @@ DATE_WINDOWS = {
     "All dates":     None,
 }
 
-# ---- Constant-Contact creds (now with refresh token & app creds) ----------
-CC_ACCESS_TOKEN  = "eyJraWQiOiJ4QnVFVHFPUUdhWkpfcXR5ZlVsNTFzb3NXbDlYdVBWenhydF9lUHlSd1I0IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmpoNmpnWk5ETDQ0UTgxU2RXWE94NHpDbDFRMFBrYkZRNkxoNWxGUGdieGsub2FyMXJjYWFrbHZVQW5sNWIwaDciLCJpc3MiOiJodHRwczovL2lkZW50aXR5LmNvbnN0YW50Y29udGFjdC5jb20vb2F1dGgyL2F1czFsbTNyeTltRjd4MkphMGg4IiwiYXVkIjoiaHR0cHM6Ly9hcGkuY2MuZW1haWwvdjMiLCJpYXQiOjE3NTAwMDgwODMsImV4cCI6MTc1MDA5NDQ4MywiY2lkIjoiZThmZGYxODUtM2E1NS00YjFkLWFhMzEtNjA2NDUxNGU2ZDcyIiwidWlkIjoiMDB1MjJsZTkwYTFpWjdhbkswaDgiLCJzY3AiOlsiYWNjb3VudF9yZWFkIiwiYWNjb3VudF91cGRhdGUiLCJvZmZsaW5lX2FjY2VzcyIsImNhbXBhaWduX2RhdGEiLCJjb250YWN0X2RhdGEiXSwiYXV0aF90aW1lIjoxNzUwMDAzNjM1LCJzdWIiOiJhbmtpdGJoYXRpYS5lbWFpbEBnbWFpbC5jb20iLCJwbGF0Zm9ybV91c2VyX2lkIjoiMDY2ZTE0ODktZGFiYi00YTdkLTk3MTktZjFlNWJhOWE2ODEyIn0.WIyMvu00FUHR-G7ZXvb6oSGsnWj56rSHUUKe_lQiaPtxktj8RMTKqFtHJxhKQ8NmMnB2iFFolESAK1Lea-wTwqlErxx5SUCuB2q23jQgb-ULb6qD7obZTxqvrZU4JXFrgHGVnbr2NCLVMhtyxSRD9IUDfhr_Ld7H_7DIA-ILG2YavU8XxKqYONn37LmmjwZcjXJhn8mLWDcxU4fO8F7i2R7GIq-6EQpYv1ALZGi01qONjQ4ByHgvoZeTE_UPQGdv6asoeU0B7M7jZQIy4ErBJ9p0K3tovxFXqkbLX3XpHijvje0B0AlNK0-9Kz36UAGxXt2pqOgKb1IHsmGTta82Ew"
-CC_REFRESH_TOKEN = "P_7YF8enEId56ETBD8SpzDUNHUNXMIDIizktfrqLNRc"
-CC_CLIENT_ID     = "e8fdf185-3a55-4b1d-aa31-6064514e6d72"
-CC_CLIENT_SECRET = "SBu5wRN2oEYDqe9gCq_wvQ"
+# ---- Constant-Contact creds from environment -------------------------------
+CC_ACCESS_TOKEN = os.getenv("CC_ACCESS_TOKEN", "")
+CC_REFRESH_TOKEN = os.getenv("CC_REFRESH_TOKEN", "")
+CC_CLIENT_ID = os.getenv("CC_CLIENT_ID", "")
+CC_CLIENT_SECRET = os.getenv("CC_CLIENT_SECRET", "")
 
-CC_LIST_ID        = "d15a9376-4088-11f0-ac60-fa163e7ee3ac"
-CC_FROM_EMAIL     = "ankitbhatia.email@gmail.com"
-CC_REPLY_TO_EMAIL = "ankitbhatia.email@gmail.com"
+CC_LIST_ID = os.getenv("CC_LIST_ID", "")
+CC_FROM_EMAIL = os.getenv("CC_FROM_EMAIL", "")
+CC_REPLY_TO_EMAIL = os.getenv("CC_REPLY_TO_EMAIL", "")
 
 # ── Nasdaq ticker→company mapping ────────────────────────────────────────────
 def load_nasdaq_names() -> dict[str, str]:
@@ -494,6 +494,23 @@ st.success("Dashboard built ✔")
 
 # ── SEND-TO-SUBSCRIBERS BUTTON ────────────────────────────────────────────
 if st.button("Send to Subscribers"):
+
+    missing_cc = [
+        name
+        for name, value in {
+            "CC_ACCESS_TOKEN": CC_ACCESS_TOKEN,
+            "CC_REFRESH_TOKEN": CC_REFRESH_TOKEN,
+            "CC_CLIENT_ID": CC_CLIENT_ID,
+            "CC_CLIENT_SECRET": CC_CLIENT_SECRET,
+            "CC_LIST_ID": CC_LIST_ID,
+            "CC_FROM_EMAIL": CC_FROM_EMAIL,
+            "CC_REPLY_TO_EMAIL": CC_REPLY_TO_EMAIL,
+        }.items()
+        if not value
+    ]
+    if missing_cc:
+        st.error("Missing Constant Contact config: " + ", ".join(missing_cc))
+        st.stop()
 
     if not email_blocks:
         st.error("No briefs to send.")

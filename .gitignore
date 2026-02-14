@@ -1,31 +1,27 @@
-############################################
 # Editor & IDE
 .idea/
 .vscode/
 __pycache__/
 *.pyc
 
-############################################
-# Local data, logs, checkpoints
+# Python env artifacts
+.venv/
+.env
+.env.*
+!.env.example
+
+# Local generated runtime data
 data/
 logs/
-Backups/
 releases/
-*.csv
-*.xlsx
-*.npz
-*.json
-*.txt
-*.html
+Backups/
 
-############################################
-# Binaries & executables
+# OS / misc
+*.log
+
+# Local binaries
+ngrok/
 *.exe
 *.dll
 *.bat
 *.so
-
-############################################
-# Misc
-ngrok/
-*.log
