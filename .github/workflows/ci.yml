@@ -17,7 +17,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-      # Resolved merge strategy: keep dynamic target discovery for fork-safe linting.
       - name: Lint
         run: |
           python - <<'PY'
@@ -31,13 +30,14 @@ jobs:
               'agents/scrape_agent.py',
               'tests',
           ]
-          existing = [p for p in candidates if pathlib.Path(p).exists()]
+          existing = [path for path in candidates if pathlib.Path(path).exists()]
           if not existing:
               print('No lint targets found; skipping Ruff.')
               sys.exit(0)
-          cmd = ['ruff', 'check', *existing]
-          print('Running:', ' '.join(cmd))
-          raise SystemExit(subprocess.call(cmd))
+
+          command = ['ruff', 'check', *existing]
+          print('Running:', ' '.join(command))
+          raise SystemExit(subprocess.call(command))
           PY
       - name: Tests
         run: pytest -q
