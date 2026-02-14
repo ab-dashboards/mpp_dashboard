@@ -95,7 +95,10 @@ def scrape_from_file(path: Path) -> str:
 
 
 def lookup_raw(row: dict) -> Path | None:
-    patterns = [safe_filename(row.get("release_id", "")) + "*", safe_filename(row.get("url", "")) + "*"]
+    patterns = [
+        safe_filename(row.get("release_id", "")) + "*",
+        safe_filename(row.get("url", "")) + "*",
+    ]
     for pat in patterns:
         matches = list(RAW_DIR.glob(pat))
         if matches:
