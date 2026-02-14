@@ -58,3 +58,8 @@ jobs:
               importlib.import_module(module)
           print('import-smoke-ok')
           PY
+        run: ruff check main.py agents/start_tunnel.py agents/scrape_agent.py tests
+      - name: Tests
+        run: pytest -q
+      - name: Import smoke check
+        run: python -c "import agents.download_agent, agents.earnings_agent, agents.rss_agent, agents.store_agent"
