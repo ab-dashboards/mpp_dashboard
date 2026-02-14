@@ -18,6 +18,46 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
       - name: Lint
+        run: |
+          python - <<'PY'
+          import pathlib
+          import subprocess
+          import sys
+
+          candidates = [
+              'main.py',
+              'agents/start_tunnel.py',
+              'agents/scrape_agent.py',
+              'tests',
+          ]
+          existing = [path for path in candidates if pathlib.Path(path).exists()]
+          if not existing:
+              print('No lint targets found; skipping Ruff.')
+              sys.exit(0)
+
+          command = ['ruff', 'check', *existing]
+          print('Running:', ' '.join(command))
+          raise SystemExit(subprocess.call(command))
+          PY
+      - name: Tests
+        run: pytest -q
+      - name: Import smoke check
+        run: |
+          python - <<'PY'
+          import importlib
+
+          modules = [
+              'agents.download_agent',
+              'agents.earnings_agent',
+              'agents.rss_agent',
+              'agents.store_agent',
+              'agents.scrape_agent',
+              'agents.start_tunnel',
+          ]
+          for module in modules:
+              importlib.import_module(module)
+          print('import-smoke-ok')
+          PY
         run: ruff check main.py agents/start_tunnel.py agents/scrape_agent.py tests
       - name: Tests
         run: pytest -q
