@@ -1,15 +1,31 @@
-# File: start_tunnel.py
-from pyngrok import ngrok, conf
+"""Start an ngrok tunnel for a local Streamlit app."""
 
-# ← point this to the EXE you just placed
-conf.get_default().ngrok_path = (
-    r"C:\Users\Lenovo\PycharmProjects\PythonProjectIEG\mpp_dashboard\ngrok\ngrok.exe"
-)
+from __future__ import annotations
 
-# only need to set this once; your token
-ngrok.set_auth_token("2yZTffNu2JANggDEAZ5jWk5fNo2_7Ch33WLdFdUQuH49MYabF")
+import os
 
-public_url = ngrok.connect(8501, "http")
-print(f"🚀 ngrok tunnel established: {public_url}")
+from dotenv import load_dotenv
+from pyngrok import conf, ngrok
 
-input("Press ENTER to close the tunnel and exit\n")
+
+def main() -> None:
+    load_dotenv()
+
+    ngrok_path = os.getenv("NGROK_PATH")
+    auth_token = os.getenv("NGROK_AUTH_TOKEN")
+    port = int(os.getenv("NGROK_PORT", "8501"))
+
+    if ngrok_path:
+        conf.get_default().ngrok_path = ngrok_path
+
+    if not auth_token:
+        raise SystemExit("NGROK_AUTH_TOKEN is required in environment.")
+
+    ngrok.set_auth_token(auth_token)
+    public_url = ngrok.connect(port, "http")
+    print(f"🚀 ngrok tunnel established: {public_url}")
+    input("Press ENTER to close the tunnel and exit\n")
+
+
+if __name__ == "__main__":
+    main()
