@@ -17,6 +17,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
+      # Resolved merge strategy: keep dynamic target discovery for fork-safe linting.
       - name: Lint
         run: |
           python - <<'PY'
